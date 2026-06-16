@@ -13,7 +13,7 @@ const nonEmpty = (s) => {
   const t = clamp(s, 1024).trim();
   return t.length ? t : "—";
 };
-const httpUrl = (u) => (typeof u === "string" && /^https?:\/\//i.test(u) ? u : undefined);
+const httpUrl = (u) => (typeof u === "string" && /^https?:\/\//i.test(u) ? encodeURI(u) : undefined);
 
 function signedPnl(n) {
   if (n == null || Number.isNaN(Number(n))) return "—";
