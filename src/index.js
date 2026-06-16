@@ -37,6 +37,7 @@ async function checkWallet(wallet, state, cfg) {
 
   let pnl = null;
   for (const trade of fresh) {
+    if (trade.transactionHash && state.hasSeen(wallet.address, trade.transactionHash)) continue;
     const side = (trade.side || "").toUpperCase();
     if (BUYS_ONLY && side !== "BUY") {
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
