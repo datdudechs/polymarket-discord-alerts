@@ -4,6 +4,7 @@ import {
 
 const COLOR_BUY = 0x2ecc71;
 const COLOR_SELL = 0xe74c3c;
+const INSTANCE = Math.random().toString(36).slice(2, 5);
 
 const clamp = (s, n) => {
   s = String(s ?? "");
@@ -54,7 +55,7 @@ export function buildPayload(trade, walletName, pnl = {}) {
           { name: "Wallet", value: nonEmpty(`[${name} — full record](${profileUrl(trade.proxyWallet)})`), inline: false },
         ],
         ...(thumb ? { thumbnail: { url: thumb } } : {}),
-        footer: { text: "tx " + String(trade.transactionHash || "").slice(-8) },
+        footer: { text: "tx " + String(trade.transactionHash || "").slice(-8) + " · i" + INSTANCE },
         timestamp: new Date(Number(trade.timestamp) * 1000).toISOString(),
       },
     ],
