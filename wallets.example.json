@@ -1,0 +1,18 @@
+{
+  "pollIntervalMs": 15000,
+
+  "defaultWebhookUrl": "https://discord.com/api/webhooks/REPLACE/ME",
+
+  "wallets": [
+    {
+      "address": "0x6af75d4e4aaf700450efbac3708cce1665810ff1",
+      "name": "spartachio",
+      "webhookUrl": "https://discord.com/api/webhooks/CHANNEL_FOR_SPARTACHIO"
+    },
+    {
+      "address": "0x0000000000000000000000000000000000000000",
+      "name": "duckfriedrice",
+      "webhookUrl": "https://discord.com/api/webhooks/CHANNEL_FOR_DUCKFRIEDRICE"
+    }
+  ]
+}
