@@ -2,4 +2,3 @@ node_modules/
 .env
 .state.json
 *.state.json
-wallets.json

@@ -1,33 +1,29 @@
 import {
-  usd,
-  shares,
-  cents,
-  decimalOdds,
-  americanOdds,
-  displayName,
-  profileUrl,
-  marketUrl,
+  usd, shares, cents, decimalOdds, americanOdds, displayName, profileUrl, marketUrl,
 } from "./format.js";
 
-const COLOR_BUY = 0x2ecc71; // green
-const COLOR_SELL = 0xe74c3c; // red
+const COLOR_BUY = 0x2ecc71;
+const COLOR_SELL = 0xe74c3c;
+
+/** Signed PnL like "🟢 +$12,340" / "🔴 −$3,210", or "—" when unknown. */
+function signedPnl(n) {
+  if (n == null || Number.isNaN(Number(n))) return "—";
+  const r = Math.round(Number(n));
+  const mark = r >= 0 ? "🟢 +" : "🔴 −";
+  return `${mark}$${Math.abs(r).toLocaleString("en-US")}`;
+}
 
 /**
- * Build a Discord webhook payload for a single trade, styled to match the
- * "spartachio just bet $109.92" alert format.
- *
- * @param {object} trade        one activity object from the Data API
- * @param {string} walletName   friendly name override from your wallets file
+ * Build the Discord webhook payload for a trade.
+ * @param {object} trade       activity object from the Data API
+ * @param {string} walletName  friendly name override
+ * @param {{l7:number|null,l14:number|null}} [pnl]  recent PnL for this wallet
  */
-export function buildPayload(trade, walletName) {
+export function buildPayload(trade, walletName, pnl = {}) {
   const name = displayName(trade, walletName);
   const side = (trade.side || "").toUpperCase();
   const amount = usd(trade.usdcSize);
-
   const oddsLine = `${cents(trade.price)}¢ · ${americanOdds(trade.price)} · ${decimalOdds(trade.price)}`;
-  const description =
-    `**${side}** ${trade.outcome} @ ${oddsLine}\n\n` +
-    `🎯 [Open market on Polymarket](${marketUrl(trade)})`;
 
   return {
     username: "Polymarket Alerts",
@@ -39,15 +35,15 @@ export function buildPayload(trade, walletName) {
           icon_url: trade.profileImage || undefined,
           url: profileUrl(trade.proxyWallet),
         },
-        description,
+        description:
+          `**${side}** ${trade.outcome} @ ${oddsLine}\n\n` +
+          `🎯 [Open market on Polymarket](${marketUrl(trade)})`,
         fields: [
           { name: "Market", value: trade.title || "—", inline: false },
           { name: "Size", value: `$${amount} (${shares(trade.size)} shares)`, inline: true },
-          {
-            name: "Wallet",
-            value: `[${name} — full record](${profileUrl(trade.proxyWallet)})`,
-            inline: true,
-          },
+          { name: "PnL 7d", value: signedPnl(pnl.l7), inline: true },
+          { name: "PnL 14d", value: signedPnl(pnl.l14), inline: true },
+          { name: "Wallet", value: `[${name} — full record](${profileUrl(trade.proxyWallet)})`, inline: false },
         ],
         thumbnail: trade.icon ? { url: trade.icon } : undefined,
         timestamp: new Date(Number(trade.timestamp) * 1000).toISOString(),
@@ -56,7 +52,6 @@ export function buildPayload(trade, walletName) {
   };
 }
 
-/** POST a payload to a Discord webhook, honoring 429 rate-limit retries. */
 export async function postToDiscord(webhookUrl, payload) {
   for (let attempt = 0; attempt < 4; attempt++) {
     const res = await fetch(webhookUrl, {
@@ -70,9 +65,7 @@ export async function postToDiscord(webhookUrl, payload) {
       await new Promise((r) => setTimeout(r, waitMs));
       continue;
     }
-    if (!res.ok) {
-      throw new Error(`discord ${res.status} ${res.statusText}: ${await res.text().catch(() => "")}`);
-    }
+    if (!res.ok) throw new Error(`discord ${res.status} ${res.statusText}: ${await res.text().catch(() => "")}`);
     return;
   }
   throw new Error("discord: gave up after repeated 429s");
