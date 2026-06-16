@@ -5,6 +5,7 @@ import { State } from "./state.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const MIN_BET_USD = Number(process.env.MIN_BET_USD || 0);
+const BUYS_ONLY = String(process.env.BUYS_ONLY ?? "true").toLowerCase() === "true";
 
 async function checkWallet(wallet, state, cfg) {
   let activities;
@@ -35,8 +36,14 @@ async function checkWallet(wallet, state, cfg) {
 
   let pnl = null;
   for (const trade of fresh) {
+    const side = (trade.side || "").toUpperCase();
+    // Skip (but record) anything we don't want to alert on.
+    if (BUYS_ONLY && side !== "BUY") {
+      state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
+      continue;
+    }
     if (Number(trade.usdcSize) < MIN_BET_USD) {
-      state.markPosted(wallet.address, trade.transactionHash, trade.timestamp); // record & skip
+      state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
       continue;
     }
     if (!pnl) pnl = await fetchWalletPnl(wallet.address);
@@ -58,7 +65,8 @@ async function main() {
   const state = new State(cfg.stateFile);
   console.log(
     `[start] watching ${cfg.wallets.length} wallet(s), polling every ${cfg.pollIntervalMs}ms, ` +
-      `min bet $${MIN_BET_USD}` + (cfg.postHistoricalOnStart ? " (posting historical on start)" : "")
+      `min bet $${MIN_BET_USD}, ${BUYS_ONLY ? "BUYS only" : "buys + sells"}` +
+      (cfg.postHistoricalOnStart ? " (posting historical on start)" : "")
   );
 
   let stopping = false;
