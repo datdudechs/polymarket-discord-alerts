@@ -17,6 +17,7 @@ export function loadConfig() {
   }
 
   const defaultWebhookUrl = process.env.DEFAULT_WEBHOOK_URL || fileConfig.defaultWebhookUrl || "";
+  const whaleWebhookUrl = process.env.WHALE_WEBHOOK_URL || fileConfig.whaleWebhookUrl || "";
   const channels = fileConfig.channels || {};
 
   const wallets = (fileConfig.wallets || [])
@@ -37,6 +38,7 @@ export function loadConfig() {
     wallets,
     channels,
     defaultWebhookUrl,
+    whaleWebhookUrl,
     pollIntervalMs: Number(process.env.POLL_INTERVAL_MS || fileConfig.pollIntervalMs || 20000),
     postHistoricalOnStart: String(process.env.POST_HISTORICAL_ON_START || "false").toLowerCase() === "true",
     stateFile: process.env.STATE_FILE ? resolve(process.env.STATE_FILE) : resolve(projectRoot, ".state.json"),

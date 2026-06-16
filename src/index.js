@@ -6,6 +6,7 @@ import { State } from "./state.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const MIN_BET_USD = Number(String(process.env.MIN_BET_USD ?? "100").replace(/[^0-9.]/g, "")) || 100;
+const WHALE_MIN_USD = Number(String(process.env.WHALE_MIN_USD ?? "5000").replace(/[^0-9.]/g, "")) || 5000;
 const BUYS_ONLY = String(process.env.BUYS_ONLY ?? "true").toLowerCase() === "true";
 
 async function checkWallet(wallet, state, cfg) {
@@ -56,13 +57,22 @@ async function checkWallet(wallet, state, cfg) {
     }
 
     if (!pnl) pnl = await fetchWalletPnl(wallet.address);
+    const payload = buildPayload(trade, wallet.name, pnl);
     try {
-      await postToDiscord(webhook, buildPayload(trade, wallet.name, pnl));
+      await postToDiscord(webhook, payload);
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
       console.log(
         `[alert:${category}] ${wallet.name || wallet.address}: ${trade.side} ${trade.outcome} ` +
           `$${Number(trade.usdcSize).toFixed(2)} — ${trade.title}`
       );
+      if (cfg.whaleWebhookUrl && Number(trade.usdcSize) >= WHALE_MIN_USD) {
+        try {
+          await postToDiscord(cfg.whaleWebhookUrl, { ...payload, username: "🐳 Whale Alert" });
+          console.log(`[whale] ${wallet.name || wallet.address}: $${Number(trade.usdcSize).toFixed(2)} — ${trade.title}`);
+        } catch (err) {
+          console.error(`[whale] ${wallet.name || wallet.address}: ${err.message}`);
+        }
+      }
     } catch (err) {
       console.error(`[discord] ${wallet.name || wallet.address}: ${err.message}`);
     }
@@ -74,7 +84,7 @@ async function main() {
   const state = new State(cfg.stateFile);
   console.log(
     `[start] watching ${cfg.wallets.length} wallet(s), polling every ${cfg.pollIntervalMs}ms, ` +
-      `min bet $${MIN_BET_USD}, ${BUYS_ONLY ? "BUYS only" : "buys + sells"}, ` +
+      `min bet $${MIN_BET_USD}, whale ≥ $${WHALE_MIN_USD}, ${BUYS_ONLY ? "BUYS only" : "buys + sells"}, ` +
       `channels: ${Object.keys(cfg.channels).join(", ") || "(default only)"}`
   );
 
