@@ -13,7 +13,8 @@ const nonEmpty = (s) => {
   const t = clamp(s, 1024).trim();
   return t.length ? t : "—";
 };
-const httpUrl = (u) => (typeof u === "string" && /^https?:\/\//i.test(u) ? encodeURI(u) : undefined);
+const httpUrl = (u) =>
+  typeof u === "string" && /^https?:\/\//i.test(u) ? encodeURI(u) : undefined;
 
 function signedPnl(n) {
   if (n == null || Number.isNaN(Number(n))) return "—";
@@ -59,8 +60,16 @@ export function buildPayload(trade, walletName, pnl = {}) {
   };
 }
 
-export async function postToDiscord(webhookUrl, payload) {
-  for (let attempt = 0; attempt < 4; attempt++) {
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// Global send queue: serialize posts and keep ~600ms between them so we stay
+// under Discord's per-webhook rate limit (~5 requests / 2s).
+const MIN_GAP_MS = 600;
+let queue = Promise.resolve();
+let lastPostAt = 0;
+
+async function sendWithRetry(webhookUrl, payload) {
+  for (let attempt = 0; attempt < 8; attempt++) {
     const res = await fetch(webhookUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -68,8 +77,7 @@ export async function postToDiscord(webhookUrl, payload) {
     });
     if (res.status === 429) {
       const body = await res.json().catch(() => ({}));
-      const waitMs = Math.ceil((body.retry_after ?? 1) * 1000) + 250;
-      await new Promise((r) => setTimeout(r, waitMs));
+      await sleep(Math.ceil((body.retry_after ?? 1) * 1000) + 250);
       continue;
     }
     if (!res.ok) {
@@ -79,4 +87,19 @@ export async function postToDiscord(webhookUrl, payload) {
     return;
   }
   throw new Error("discord: gave up after repeated 429s");
+}
+
+export function postToDiscord(webhookUrl, payload) {
+  const task = async () => {
+    const wait = Math.max(0, lastPostAt + MIN_GAP_MS - Date.now());
+    if (wait) await sleep(wait);
+    try {
+      await sendWithRetry(webhookUrl, payload);
+    } finally {
+      lastPostAt = Date.now();
+    }
+  };
+  const run = queue.then(task, task); // run regardless of prior outcome
+  queue = run.catch(() => {}); // keep the queue alive on errors
+  return run;
 }
