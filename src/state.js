@@ -2,12 +2,6 @@ import { readFileSync, writeFileSync, renameSync } from "node:fs";
 
 const MAX_SEEN_PER_WALLET = 300;
 
-/**
- * Tiny JSON-file store that remembers which trades we've already posted, so a
- * restart (or a redeploy on Railway) doesn't re-spam old trades.
- *
- * Shape: { "0xabc...": { lastTimestamp: 1718553600, seen: ["0xtx1", ...] } }
- */
 export class State {
   constructor(file) {
     this.file = file;
@@ -27,18 +21,18 @@ export class State {
     return this.forWallet(address).seen.includes(txHash);
   }
 
-  /** Mark a trade posted and advance the watermark timestamp. */
   markPosted(address, txHash, timestamp) {
     const w = this.forWallet(address);
-    if (!w.seen.includes(txHash)) w.seen.push(txHash);
+    if (txHash && !w.seen.includes(txHash)) w.seen.push(txHash);
     if (w.seen.length > MAX_SEEN_PER_WALLET) w.seen = w.seen.slice(-MAX_SEEN_PER_WALLET);
     if (Number(timestamp) > w.lastTimestamp) w.lastTimestamp = Number(timestamp);
+    this.save(); // persist immediately so a redeploy can't replay this trade
   }
 
-  /** Set the baseline so only future trades post (used on first sight of a wallet). */
   setBaseline(address, timestamp) {
     const w = this.forWallet(address);
     if (Number(timestamp) > w.lastTimestamp) w.lastTimestamp = Number(timestamp);
+    this.save();
   }
 
   isNew(address) {
@@ -48,6 +42,6 @@ export class State {
   save() {
     const tmp = `${this.file}.tmp`;
     writeFileSync(tmp, JSON.stringify(this.data));
-    renameSync(tmp, this.file); // atomic-ish: avoids a half-written state file
+    renameSync(tmp, this.file);
   }
 }
