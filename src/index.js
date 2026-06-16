@@ -10,6 +10,7 @@ const WHALE_MIN_USD = Number(String(process.env.WHALE_MIN_USD ?? "5000").replace
 const BUYS_ONLY = String(process.env.BUYS_ONLY ?? "true").toLowerCase() === "true";
 
 async function checkWallet(wallet, state, cfg) {
+  state.reload();
   let activities;
   try {
     activities = await fetchActivity(wallet.address, cfg.activityLimit);
