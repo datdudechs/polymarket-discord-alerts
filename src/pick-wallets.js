@@ -1,51 +1,50 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
-import { fetchLeaderboard } from "./polymarket.js";
+import { fetchLeaderboard, fetchWalletPnl } from "./polymarket.js";
 
-// Generate wallets.json from the Polymarket leaderboard.
-//   npm run pick-wallets -- --orderBy=pnl --minVol=500000 --window=30d --limit=20
-// Flags:
-//   --orderBy  pnl (profit) | vol (activity)            default pnl
-//   --minPnl   drop anyone below this profit            default 0  (profitable only)
-//   --minVol   drop anyone below this volume (no dead channels)  default 0
-//   --window   1d | 7d | 30d | all                      default 30d
-//   --limit    how many wallets to keep                 default 20
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const projectRoot = resolve(__dirname, "..");
-
-function arg(name, def) {
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const arg = (name, def) => {
   const hit = process.argv.find((a) => a.startsWith(`--${name}=`));
   return hit ? hit.split("=")[1] : def;
-}
+};
 
 const window = arg("window", "30d");
 const orderBy = arg("orderBy", "pnl");
 const limit = Number(arg("limit", "20"));
-const minPnl = Number(arg("minPnl", "0"));
+const minPnl = Number(arg("minPnl", "0")); // verified 30d PnL floor
 const minVol = Number(arg("minVol", "0"));
 const outFile = resolve(projectRoot, arg("out", "wallets.json"));
 const envWebhook = process.env.DEFAULT_WEBHOOK_URL || "";
 const placeholder = "https://discord.com/api/webhooks/REPLACE_ME";
 
-// Preserve webhooks you've already mapped so re-running keeps your channel links.
 const existing = {};
-let prevDefault = "";
+let prevDefault = "", prevPoll = 20000;
 try {
   const prev = JSON.parse(readFileSync(outFile, "utf8"));
   prevDefault = prev.defaultWebhookUrl || "";
+  if (prev.pollIntervalMs) prevPoll = prev.pollIntervalMs;
   for (const w of prev.wallets || []) existing[String(w.address).toLowerCase()] = w.webhookUrl;
 } catch {}
 const fallbackWebhook = envWebhook || prevDefault || placeholder;
 
-// Pull a bigger pool than we need, then filter down — so a volume floor still
-// leaves us enough profitable, active traders to fill the list.
-const poolSize = Math.min(500, Math.max(limit * 5, 100));
-const pool = await fetchLeaderboard({ window, orderBy, limit: poolSize });
+const poolSize = Math.min(500, Math.max(limit * 8, 100));
+const pool = (await fetchLeaderboard({ window, orderBy, limit: poolSize }))
+  .filter((t) => /^0x[0-9a-f]{40}$/.test(t.address) && Number(t.vol) >= minVol);
 
-const picked = pool
-  .filter((t) => /^0x[0-9a-f]{40}$/.test(t.address))
-  .filter((t) => Number(t.pnl) >= minPnl && Number(t.vol) >= minVol)
+console.log(`Verifying real 30d PnL for ${pool.length} candidates (profile numbers)...`);
+const verified = [];
+for (const t of pool) {
+  const pnl = await fetchWalletPnl(t.address);
+  verified.push({ ...t, pnl30: pnl.l30 });
+  await sleep(200);
+}
+
+const picked = verified
+  .filter((t) => Number.isFinite(t.pnl30) && t.pnl30 >= minPnl)
+  .sort((a, b) => b.pnl30 - a.pnl30)
   .slice(0, limit);
 
 const wallets = picked.map((t) => ({
@@ -54,20 +53,16 @@ const wallets = picked.map((t) => ({
   webhookUrl: existing[t.address] || fallbackWebhook,
 }));
 
-const config = { pollIntervalMs: 15000, defaultWebhookUrl: fallbackWebhook, wallets };
+const config = { pollIntervalMs: prevPoll, defaultWebhookUrl: fallbackWebhook, wallets };
 writeFileSync(outFile, JSON.stringify(config, null, 2) + "\n");
 
 const fmt = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-US");
-console.log(
-  `\nTop ${wallets.length} by ${orderBy} (${window}), minPnl ${fmt(minPnl)}, minVol ${fmt(minVol)} -> wallets.json\n`
-);
+console.log(`\nTop ${wallets.length} by VERIFIED 30d PnL (>= ${fmt(minPnl)}, vol >= ${fmt(minVol)}) -> wallets.json\n`);
 picked.forEach((t, i) => {
   console.log(
-    `${String(i + 1).padStart(2)}. ${(t.name || "").slice(0, 20).padEnd(20)} ` +
-      `vol ${fmt(t.vol).padStart(13)}  pnl ${fmt(t.pnl).padStart(13)}  ${t.address}`
+    `${String(i + 1).padStart(2)}. ${(t.name || "").slice(0, 18).padEnd(18)} ` +
+      `vol ${fmt(t.vol).padStart(13)}  lb-pnl ${fmt(t.pnl).padStart(12)}  real-30d ${fmt(t.pnl30).padStart(12)}`
   );
 });
-if (wallets.length < limit) {
-  console.log(`\nNote: only ${wallets.length} passed the filters — loosen --minVol/--minPnl for more.`);
-}
+if (wallets.length < limit) console.log(`\nNote: only ${wallets.length} passed — loosen filters.`);
 console.log("");
