@@ -4,6 +4,7 @@ import { buildPayload, postToDiscord } from "./discord.js";
 import { State } from "./state.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const MIN_BET_USD = Number(process.env.MIN_BET_USD || 0);
 
 async function checkWallet(wallet, state, cfg) {
   let activities;
@@ -25,15 +26,20 @@ async function checkWallet(wallet, state, cfg) {
   }
 
   const watermark = state.forWallet(wallet.address).lastTimestamp;
-  const toPost = trades.filter((t) => {
+  const fresh = trades.filter((t) => {
     if (Number(t.timestamp) < watermark) return false;
     if (t.transactionHash && state.hasSeen(wallet.address, t.transactionHash)) return false;
     return true;
   });
-  if (toPost.length === 0) return;
+  if (fresh.length === 0) return;
 
-  const pnl = await fetchWalletPnl(wallet.address);
-  for (const trade of toPost) {
+  let pnl = null;
+  for (const trade of fresh) {
+    if (Number(trade.usdcSize) < MIN_BET_USD) {
+      state.markPosted(wallet.address, trade.transactionHash, trade.timestamp); // record & skip
+      continue;
+    }
+    if (!pnl) pnl = await fetchWalletPnl(wallet.address);
     try {
       await postToDiscord(wallet.webhookUrl, buildPayload(trade, wallet.name, pnl));
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
@@ -51,8 +57,8 @@ async function main() {
   const cfg = loadConfig();
   const state = new State(cfg.stateFile);
   console.log(
-    `[start] watching ${cfg.wallets.length} wallet(s), polling every ${cfg.pollIntervalMs}ms` +
-      (cfg.postHistoricalOnStart ? " (posting historical trades on start)" : "")
+    `[start] watching ${cfg.wallets.length} wallet(s), polling every ${cfg.pollIntervalMs}ms, ` +
+      `min bet $${MIN_BET_USD}` + (cfg.postHistoricalOnStart ? " (posting historical on start)" : "")
   );
 
   let stopping = false;
