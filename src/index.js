@@ -1,5 +1,6 @@
 import { loadConfig } from "./config.js";
-import { fetchActivity, fetchWalletPnl } from "./polymarket.js";
+import { fetchActivity, fetchWalletPnl, fetchEventTags } from "./polymarket.js";
+import { categorize } from "./categories.js";
 import { buildPayload, postToDiscord } from "./discord.js";
 import { State } from "./state.js";
 
@@ -37,7 +38,6 @@ async function checkWallet(wallet, state, cfg) {
   let pnl = null;
   for (const trade of fresh) {
     const side = (trade.side || "").toUpperCase();
-    // Skip (but record) anything we don't want to alert on.
     if (BUYS_ONLY && side !== "BUY") {
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
       continue;
@@ -46,12 +46,20 @@ async function checkWallet(wallet, state, cfg) {
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
       continue;
     }
+
+    const category = categorize(await fetchEventTags(trade.eventSlug));
+    const webhook = cfg.channels[category] || cfg.defaultWebhookUrl;
+    if (!webhook) {
+      state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
+      continue;
+    }
+
     if (!pnl) pnl = await fetchWalletPnl(wallet.address);
     try {
-      await postToDiscord(wallet.webhookUrl, buildPayload(trade, wallet.name, pnl));
+      await postToDiscord(webhook, buildPayload(trade, wallet.name, pnl));
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
       console.log(
-        `[alert] ${wallet.name || wallet.address}: ${trade.side} ${trade.outcome} ` +
+        `[alert:${category}] ${wallet.name || wallet.address}: ${trade.side} ${trade.outcome} ` +
           `$${Number(trade.usdcSize).toFixed(2)} — ${trade.title}`
       );
     } catch (err) {
@@ -65,8 +73,8 @@ async function main() {
   const state = new State(cfg.stateFile);
   console.log(
     `[start] watching ${cfg.wallets.length} wallet(s), polling every ${cfg.pollIntervalMs}ms, ` +
-      `min bet $${MIN_BET_USD}, ${BUYS_ONLY ? "BUYS only" : "buys + sells"}` +
-      (cfg.postHistoricalOnStart ? " (posting historical on start)" : "")
+      `min bet $${MIN_BET_USD}, ${BUYS_ONLY ? "BUYS only" : "buys + sells"}, ` +
+      `channels: ${Object.keys(cfg.channels).join(", ") || "(default only)"}`
   );
 
   let stopping = false;

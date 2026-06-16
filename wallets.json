@@ -87,5 +87,13 @@
       "name": "foxy.",
       "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
     }
-  ]
+  ],
+  "channels": {
+    "soccer": "https://discord.com/api/webhooks/1516545638341546134/-HyjiZFaooT0cNVXPy6n9dzg2Nmsl_cDgWOoQ22ocz7ZUFTgM7xs6jgBD7ML942kaRpJ",
+    "esports": "https://discord.com/api/webhooks/1516545541021106197/AtN8gXzWq7PpwbjC7X-_5TT9ubQZ3J7yhpBr8Jh0oLFXRNVer92QCIyw7kCfwOvQpIC5",
+    "crypto": "https://discord.com/api/webhooks/1516545449404928290/zxiC3ZBNv6pohEYsLjEnOYfTY3L3XRZcnQSApAEmpcUAw5A2xepJz0Y9EpZR1ksXtRgP",
+    "politics": "https://discord.com/api/webhooks/1516545359738966106/ugHkNk3_2iq9RDqFlYl1EEh8OlTuCIwL62U26Xqn97xX_BIEu1tIp5OSyMflb9Laoeh7",
+    "basketball": "https://discord.com/api/webhooks/1516545213265346602/8EpyQvbA787sDF3FwHbijruhoaQE79MMnCV4doPVfFkTSqfjlmRsJPX-Nn07GJRNsOcj",
+    "baseball": "https://discord.com/api/webhooks/1516545061096259705/pZIpdc5C6-qP0-hleMybnwwI4WOwuKzVQHvSL1lCbpZ6Wsma2kqKMgNlRsTfSzXKVmo5"
+  }
 }
