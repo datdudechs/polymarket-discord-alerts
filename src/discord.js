@@ -1,3 +1,4 @@
+import os from "node:os";
 import {
   usd, shares, cents, decimalOdds, americanOdds, displayName, profileUrl, marketUrl,
 } from "./format.js";
@@ -5,6 +6,7 @@ import {
 const COLOR_BUY = 0x2ecc71;
 const COLOR_SELL = 0xe74c3c;
 const INSTANCE = Math.random().toString(36).slice(2, 5);
+const HOST = process.env.RAILWAY_PROJECT_NAME ? "rail:" + process.env.RAILWAY_PROJECT_NAME : process.env.CODESPACE_NAME ? "codespace" : os.hostname();
 
 const clamp = (s, n) => {
   s = String(s ?? "");
@@ -55,7 +57,7 @@ export function buildPayload(trade, walletName, pnl = {}) {
           { name: "Wallet", value: nonEmpty(`[${name} — full record](${profileUrl(trade.proxyWallet)})`), inline: false },
         ],
         ...(thumb ? { thumbnail: { url: thumb } } : {}),
-        footer: { text: "tx " + String(trade.transactionHash || "").slice(-8) + " · i" + INSTANCE },
+        footer: { text: "tx " + String(trade.transactionHash || "").slice(-8) + " · i" + INSTANCE + "@" + HOST },
         timestamp: new Date(Number(trade.timestamp) * 1000).toISOString(),
       },
     ],
