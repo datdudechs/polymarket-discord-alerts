@@ -4,7 +4,7 @@ import { buildPayload, postToDiscord } from "./discord.js";
 import { State } from "./state.js";
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-const MIN_BET_USD = Number(process.env.MIN_BET_USD || 0);
+const MIN_BET_USD = Number(String(process.env.MIN_BET_USD ?? "100").replace(/[^0-9.]/g, "")) || 100;
 const BUYS_ONLY = String(process.env.BUYS_ONLY ?? "true").toLowerCase() === "true";
 
 async function checkWallet(wallet, state, cfg) {
