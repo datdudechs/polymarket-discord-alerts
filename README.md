@@ -16,7 +16,8 @@ per-sport channels, with a cross-category whale feed.
   1-day PnL, posted to a dedicated summary channel (optional).
 - **👁️ Personal watchlist + slash commands** — add one-off wallets on the fly from Discord
   with `/track`, drop them with `/untrack`, and list them with `/watchlist`. Watchlist trades
-  post to their own channel and skip the roster's buys-only / min-bet / category rules (optional).
+  post to their own channel and skip the roster's buys-only / category rules (only a small
+  anti-dust minimum applies) (optional).
 - **Filters** — BUYS only and a minimum bet size (defaults: buys-only, $100).
 - **Rich cards** — price in ¢ + American/decimal odds, size in $/shares, last-7d & 14d PnL.
 - **Reliable** — de-dupes by tx, persists state immediately, rate-limit queue, runs 24/7.
@@ -87,6 +88,7 @@ To add a category: create a channel + `CHANNEL_<NAME>` env var, and add a rule i
 - `MIN_BET_USD` — minimum bet size, numbers only (default `100`)
 - `WHALE_MIN_USD` — whale threshold (default `5000`)
 - `BUYS_ONLY` — `false` to also alert on sells (default `true`)
+- `WATCHLIST_MIN_BET_USD` — anti-dust floor for watchlist trades (default `50`; `0` posts all)
 - `POLL_INTERVAL_MS` — poll frequency (default `20000`)
 - `STATE_FILE` — state path; mount a volume here in production (default `./.state.json`)
 - `WATCHLIST_FILE` — watchlist path; mount on the same volume (default `./.watchlist.json`)
@@ -111,8 +113,9 @@ alongside). The last-posted date is persisted in the state file, so restarts won
 ## Slash commands (`/track`, `/untrack`, `/watchlist`)
 
 These let you manage a personal watchlist from Discord. Watchlist trades post to
-`WATCHLIST_WEBHOOK_URL` and intentionally **skip** the roster's buys-only / min-bet /
-category-routing rules — every trade from a watched wallet is posted.
+`WATCHLIST_WEBHOOK_URL` and intentionally **skip** the roster's buys-only / category-routing
+rules — every trade from a watched wallet is posted, except dust below
+`WATCHLIST_MIN_BET_USD` (default $50).
 
 Webhooks can only *send*, so the slash commands need a real bot. This is **optional** — leave
 `DISCORD_BOT_TOKEN` unset and everything else still works.

@@ -11,6 +11,9 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const MIN_BET_USD = Number(String(process.env.MIN_BET_USD ?? "100").replace(/[^0-9.]/g, "")) || 100;
 const WHALE_MIN_USD = Number(String(process.env.WHALE_MIN_USD ?? "5000").replace(/[^0-9.]/g, "")) || 5000;
 const BUYS_ONLY = String(process.env.BUYS_ONLY ?? "true").toLowerCase() === "true";
+// Watchlist wallets skip the roster's buys-only/min-bet rules, but still ignore
+// dust below this floor so the watchlist channel doesn't fill with tiny trades.
+const WATCHLIST_MIN_BET_USD = Number(String(process.env.WATCHLIST_MIN_BET_USD ?? "50").replace(/[^0-9.]/g, "")) || 0;
 
 async function checkWallet(wallet, state, cfg) {
   state.reload();
@@ -53,7 +56,8 @@ async function checkWallet(wallet, state, cfg) {
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
       continue;
     }
-    if (!isWatch && Number(trade.usdcSize) < MIN_BET_USD) {
+    const minBet = isWatch ? WATCHLIST_MIN_BET_USD : MIN_BET_USD;
+    if (Number(trade.usdcSize) < minBet) {
       state.markPosted(wallet.address, trade.transactionHash, trade.timestamp);
       continue;
     }
@@ -141,7 +145,7 @@ async function main() {
   console.log(
     `[start] watching ${cfg.wallets.length} roster + ${watchlist.list().length} watchlist wallet(s), ` +
       `polling every ${cfg.pollIntervalMs}ms, ` +
-      `min bet $${MIN_BET_USD}, whale ≥ $${WHALE_MIN_USD}, ${BUYS_ONLY ? "BUYS only" : "buys + sells"}, ` +
+      `min bet $${MIN_BET_USD} (watchlist $${WATCHLIST_MIN_BET_USD}), whale ≥ $${WHALE_MIN_USD}, ${BUYS_ONLY ? "BUYS only" : "buys + sells"}, ` +
       `channels: ${Object.keys(cfg.channels).join(", ") || "(default only)"}` +
       (cfg.summaryWebhookUrl ? `, daily summary at ${String(cfg.summaryHourUtc).padStart(2, "0")}:00 UTC` : "")
   );
