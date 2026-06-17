@@ -1,12 +1,9 @@
-import os from "node:os";
 import {
   usd, shares, cents, decimalOdds, americanOdds, displayName, profileUrl, marketUrl,
 } from "./format.js";
 
 const COLOR_BUY = 0x2ecc71;
 const COLOR_SELL = 0xe74c3c;
-const INSTANCE = Math.random().toString(36).slice(2, 5);
-const HOST = process.env.RAILWAY_PROJECT_NAME ? "rail:" + process.env.RAILWAY_PROJECT_NAME : process.env.CODESPACE_NAME ? "codespace" : os.hostname();
 
 const clamp = (s, n) => {
   s = String(s ?? "");
@@ -65,9 +62,6 @@ export function buildPayload(trade, walletName, pnl = {}) {
 }
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-// Global send queue: serialize posts and keep ~600ms between them so we stay
-// under Discord's per-webhook rate limit (~5 requests / 2s).
 const MIN_GAP_MS = 600;
 let queue = Promise.resolve();
 let lastPostAt = 0;
@@ -103,7 +97,7 @@ export function postToDiscord(webhookUrl, payload) {
       lastPostAt = Date.now();
     }
   };
-  const run = queue.then(task, task); // run regardless of prior outcome
-  queue = run.catch(() => {}); // keep the queue alive on errors
+  const run = queue.then(task, task);
+  queue = run.catch(() => {});
   return run;
 }
