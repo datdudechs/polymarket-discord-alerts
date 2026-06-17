@@ -25,6 +25,20 @@ Gamma /events (tags) de-dupes by tx
 variables (see `.env.example`). `wallets.json` holds only public wallet addresses/names.
 Locally, copy `.env.example` to `.env` (gitignored); in production, set them in your host's
 Variables. Never commit real webhook URLs.
+## Deploy your own (fork-friendly)
+
+This repo contains **no secrets** — everything sensitive is an environment variable, so
+running your own copy is pure configuration with **zero code changes**:
+
+1. Fork or clone the repo.
+2. Create your Discord channels and a webhook for each (one per sport, one whale, one
+   catch-all "other").
+3. Set the webhook **environment variables** in your host (Railway -> Variables):
+   `DEFAULT_WEBHOOK_URL`, `WHALE_WEBHOOK_URL`, and a `CHANNEL_<SPORT>` for each channel.
+4. Run `npm run pick-wallets` to fill `wallets.json`, then deploy. Thats it.
+
+See **Configuration reference** below for the full list of variables.
+
 ## Quick start
 Prerequisites: Node 20+, a Discord server you can add webhooks to.
 1. **Pick wallets** (ranked by verified 30-day PnL):
