@@ -54,7 +54,7 @@ const pnlCache = new Map();
 export async function fetchWalletPnl(address) {
   const cached = pnlCache.get(address);
   if (cached && Date.now() - cached.at < PNL_TTL_MS) return cached.value;
-  let value = { l7: null, l14: null, l30: null };
+  let value = { l1: null, l7: null, l14: null, l30: null };
   const url = `${PNL_API}/user-pnl?user_address=${address}&interval=1m&fidelity=1d`;
   for (let attempt = 0; attempt < 3; attempt++) {
     try {
@@ -70,7 +70,12 @@ export async function fetchWalletPnl(address) {
             for (const pt of series) { if (pt.t <= cutoff) chosen = pt; else break; }
             return chosen.p;
           };
-          value = { l7: latest.p - valueDaysAgo(7), l14: latest.p - valueDaysAgo(14), l30: latest.p - valueDaysAgo(30) };
+          value = {
+            l1: latest.p - valueDaysAgo(1),
+            l7: latest.p - valueDaysAgo(7),
+            l14: latest.p - valueDaysAgo(14),
+            l30: latest.p - valueDaysAgo(30),
+          };
         }
       }
       break;

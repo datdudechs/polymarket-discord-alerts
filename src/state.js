@@ -43,6 +43,18 @@ export class State {
     return this.forWallet(address).lastTimestamp === 0;
   }
 
+  // Generic metadata, kept under a non-address key so it never collides with
+  // per-wallet records. Used to remember when the daily summary last posted.
+  getLastSummaryDate() {
+    return this.data.__meta?.lastSummaryDate || "";
+  }
+
+  setLastSummaryDate(date) {
+    if (!this.data.__meta) this.data.__meta = {};
+    this.data.__meta.lastSummaryDate = date;
+    this.save();
+  }
+
   save() {
     const tmp = `${this.file}.tmp`;
     writeFileSync(tmp, JSON.stringify(this.data));

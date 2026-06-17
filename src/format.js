@@ -54,3 +54,11 @@ export function marketUrl(trade) {
   if (trade.slug) return `https://polymarket.com/market/${trade.slug}`;
   return "https://polymarket.com";
 }
+
+/** Signed USD PnL with a colored marker, e.g. 1234 -> "🟢 +$1,234", -50 -> "🔴 −$50". */
+export function signedPnl(n) {
+  if (n == null || Number.isNaN(Number(n))) return "—";
+  const r = Math.round(Number(n));
+  const mark = r >= 0 ? "🟢 +" : "🔴 −";
+  return `${mark}$${Math.abs(r).toLocaleString("en-US")}`;
+}
