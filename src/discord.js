@@ -1,5 +1,5 @@
 import {
-  usd, shares, cents, decimalOdds, americanOdds, displayName, profileUrl, marketUrl,
+  usd, shares, cents, decimalOdds, americanOdds, displayName, profileUrl, marketUrl, signedPnl,
 } from "./format.js";
 
 const COLOR_BUY = 0x2ecc71;
@@ -15,13 +15,6 @@ const nonEmpty = (s) => {
 };
 const httpUrl = (u) =>
   typeof u === "string" && /^https?:\/\//i.test(u) ? encodeURI(u) : undefined;
-
-function signedPnl(n) {
-  if (n == null || Number.isNaN(Number(n))) return "—";
-  const r = Math.round(Number(n));
-  const mark = r >= 0 ? "🟢 +" : "🔴 −";
-  return `${mark}$${Math.abs(r).toLocaleString("en-US")}`;
-}
 
 export function buildPayload(trade, walletName, pnl = {}) {
   const name = displayName(trade, walletName);
