@@ -57,7 +57,7 @@ export function buildPayload(trade, walletName, pnl = {}) {
           { name: "Wallet", value: nonEmpty(`[${name} — full record](${profileUrl(trade.proxyWallet)})`), inline: false },
         ],
         ...(thumb ? { thumbnail: { url: thumb } } : {}),
-        footer: { text: "tx " + String(trade.transactionHash || "").slice(-8) + " · i" + INSTANCE + "@" + HOST },
+        footer: { text: "tx " + String(trade.transactionHash || "").slice(-8) },
         timestamp: new Date(Number(trade.timestamp) * 1000).toISOString(),
       },
     ],
