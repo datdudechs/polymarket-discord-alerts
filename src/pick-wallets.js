@@ -14,27 +14,21 @@ const arg = (name, def) => {
 const window = arg("window", "30d");
 const orderBy = arg("orderBy", "pnl");
 const limit = Number(arg("limit", "20"));
-const minPnl = Number(arg("minPnl", "0")); // verified 30d PnL floor
+const minPnl = Number(arg("minPnl", "0"));
 const minVol = Number(arg("minVol", "0"));
 const outFile = resolve(projectRoot, arg("out", "wallets.json"));
-const envWebhook = process.env.DEFAULT_WEBHOOK_URL || "";
-const placeholder = "https://discord.com/api/webhooks/REPLACE_ME";
 
-const existing = {};
-let prevDefault = "", prevPoll = 20000;
+let prevPoll = 20000;
 try {
   const prev = JSON.parse(readFileSync(outFile, "utf8"));
-  prevDefault = prev.defaultWebhookUrl || "";
   if (prev.pollIntervalMs) prevPoll = prev.pollIntervalMs;
-  for (const w of prev.wallets || []) existing[String(w.address).toLowerCase()] = w.webhookUrl;
 } catch {}
-const fallbackWebhook = envWebhook || prevDefault || placeholder;
 
 const poolSize = Math.min(500, Math.max(limit * 8, 100));
 const pool = (await fetchLeaderboard({ window, orderBy, limit: poolSize }))
   .filter((t) => /^0x[0-9a-f]{40}$/.test(t.address) && Number(t.vol) >= minVol);
 
-console.log(`Verifying real 30d PnL for ${pool.length} candidates (profile numbers)...`);
+console.log(`Verifying real 30d PnL for ${pool.length} candidates...`);
 const verified = [];
 for (const t of pool) {
   const pnl = await fetchWalletPnl(t.address);
@@ -47,14 +41,8 @@ const picked = verified
   .sort((a, b) => b.pnl30 - a.pnl30)
   .slice(0, limit);
 
-const wallets = picked.map((t) => ({
-  address: t.address,
-  name: t.name || t.address.slice(0, 8),
-  webhookUrl: existing[t.address] || fallbackWebhook,
-}));
-
-const config = { pollIntervalMs: prevPoll, defaultWebhookUrl: fallbackWebhook, wallets };
-writeFileSync(outFile, JSON.stringify(config, null, 2) + "\n");
+const wallets = picked.map((t) => ({ address: t.address, name: t.name || t.address.slice(0, 8) }));
+writeFileSync(outFile, JSON.stringify({ pollIntervalMs: prevPoll, wallets }, null, 2) + "\n");
 
 const fmt = (n) => "$" + Math.round(Number(n) || 0).toLocaleString("en-US");
 console.log(`\nTop ${wallets.length} by VERIFIED 30d PnL (>= ${fmt(minPnl)}, vol >= ${fmt(minVol)}) -> wallets.json\n`);

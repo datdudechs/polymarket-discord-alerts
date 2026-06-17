@@ -1,18 +1,5 @@
 {
   "pollIntervalMs": 20000,
-
-  "defaultWebhookUrl": "https://discord.com/api/webhooks/REPLACE_OTHER_CATCHALL",
-  "whaleWebhookUrl": "https://discord.com/api/webhooks/REPLACE_WHALE",
-
-  "channels": {
-    "soccer": "https://discord.com/api/webhooks/REPLACE_SOCCER",
-    "esports": "https://discord.com/api/webhooks/REPLACE_ESPORTS",
-    "crypto": "https://discord.com/api/webhooks/REPLACE_CRYPTO",
-    "politics": "https://discord.com/api/webhooks/REPLACE_POLITICS",
-    "basketball": "https://discord.com/api/webhooks/REPLACE_BASKETBALL",
-    "baseball": "https://discord.com/api/webhooks/REPLACE_BASEBALL"
-  },
-
   "wallets": [
     { "address": "0x0000000000000000000000000000000000000000", "name": "example-trader" }
   ]

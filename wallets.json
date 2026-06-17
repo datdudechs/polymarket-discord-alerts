@@ -1,100 +1,73 @@
 {
   "pollIntervalMs": 15000,
-  "defaultWebhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c",
   "wallets": [
     {
       "address": "0x96cfcb0c30942cfcd1cdf76c7d408794d66b1acb",
-      "name": "mintblade",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "mintblade"
     },
     {
       "address": "0x26437896ed9dfeb2f69765edcafe8fdceaab39ae",
-      "name": "Latina",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "Latina"
     },
     {
       "address": "0xf0318c32136c2db7fec88b84869aee6a1106c80c",
-      "name": "BreakTheBank",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "BreakTheBank"
     },
     {
       "address": "0xd1c537b2a7cba8d365e111bffb9de7b205e2cbd0",
-      "name": "weatherman12",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "weatherman12"
     },
     {
       "address": "0xe734e7bf7cfb9e464681f71822f6c2f6be514f0c",
-      "name": "boyau",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "boyau"
     },
     {
       "address": "0x8b3234f9027f4e994e949df4b48b90ab79015950",
-      "name": "Gametheory-394",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "Gametheory-394"
     },
     {
       "address": "0x780a7539200e74e882dde303952029bda21684f0",
-      "name": "0x780A7539200E74E882ddE303952029bDA21684F0-1779685038655",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "0x780A7539200E74E882ddE303952029bDA21684F0-1779685038655"
     },
     {
       "address": "0x3f3aa7005f8006bfcc367d43a25cde25509fe8fd",
-      "name": "us391",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "us391"
     },
     {
       "address": "0x70d94a4ff67ed919a8480885cf0808afefe7a684",
-      "name": "naiiiiii",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "naiiiiii"
     },
     {
       "address": "0xdb83e85ffd22faa4009273034770f96ffc5b1e50",
-      "name": "sentrio",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "sentrio"
     },
     {
       "address": "0xdb859a551fcf56e49416160911476bea7307152f",
-      "name": "AV23IUa",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "AV23IUa"
     },
     {
       "address": "0xc6dd722558dbfbd8fa780efcbe819ed8c6604b9f",
-      "name": "tourists",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "tourists"
     },
     {
       "address": "0x1117eade222413335b7ec959e5b48c1d3dbc3532",
-      "name": "benwyatt",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "benwyatt"
     },
     {
       "address": "0x987b441a20dd4aa4ba6d53069e852e7f820adf43",
-      "name": "lighthousefamily",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "lighthousefamily"
     },
     {
       "address": "0x076daa87c4fe1a85402a9b6b8e0a866224388d4c",
-      "name": "0x076daa",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "0x076daa"
     },
     {
       "address": "0xa7b7505abe2fdcc497c00074534f7fbd7e07962e",
-      "name": "gud.hl",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "gud.hl"
     },
     {
       "address": "0x5f8691f6ee3f48a29ec8f2d909dd20900cdfa769",
-      "name": "foxy.",
-      "webhookUrl": "https://discord.com/api/webhooks/1516515675169099988/PwYjgpHe2fVNtuQIossiAnSc8kFY87FZhe4HCrONJuDJbo9bOD53J_RsJdmQZwtAPF3c"
+      "name": "foxy."
     }
-  ],
-  "channels": {
-    "soccer": "https://discord.com/api/webhooks/1516545638341546134/-HyjiZFaooT0cNVXPy6n9dzg2Nmsl_cDgWOoQ22ocz7ZUFTgM7xs6jgBD7ML942kaRpJ",
-    "esports": "https://discord.com/api/webhooks/1516545541021106197/AtN8gXzWq7PpwbjC7X-_5TT9ubQZ3J7yhpBr8Jh0oLFXRNVer92QCIyw7kCfwOvQpIC5",
-    "crypto": "https://discord.com/api/webhooks/1516545449404928290/zxiC3ZBNv6pohEYsLjEnOYfTY3L3XRZcnQSApAEmpcUAw5A2xepJz0Y9EpZR1ksXtRgP",
-    "politics": "https://discord.com/api/webhooks/1516545359738966106/ugHkNk3_2iq9RDqFlYl1EEh8OlTuCIwL62U26Xqn97xX_BIEu1tIp5OSyMflb9Laoeh7",
-    "basketball": "https://discord.com/api/webhooks/1516545213265346602/8EpyQvbA787sDF3FwHbijruhoaQE79MMnCV4doPVfFkTSqfjlmRsJPX-Nn07GJRNsOcj",
-    "baseball": "https://discord.com/api/webhooks/1516545061096259705/pZIpdc5C6-qP0-hleMybnwwI4WOwuKzVQHvSL1lCbpZ6Wsma2kqKMgNlRsTfSzXKVmo5"
-  },
-  "whaleWebhookUrl": "https://discord.com/api/webhooks/1516553686363537612/IF_afIwPSSBUMsJpVJIX9Rm7KOa-HxiKBCvWw_TM81YzB9zbxF1IeFvSURmUPUIb3FUL"
+  ]
 }
