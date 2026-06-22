@@ -2,72 +2,104 @@
   "pollIntervalMs": 15000,
   "wallets": [
     {
-      "address": "0x96cfcb0c30942cfcd1cdf76c7d408794d66b1acb",
-      "name": "mintblade"
+      "address": "0xf0318c32136c2db7fec88b84869aee6a1106c80c",
+      "name": "BreakTheBank"
     },
     {
       "address": "0x26437896ed9dfeb2f69765edcafe8fdceaab39ae",
       "name": "Latina"
     },
     {
-      "address": "0xf0318c32136c2db7fec88b84869aee6a1106c80c",
-      "name": "BreakTheBank"
+      "address": "0x5966db1fe50763c9e3c014d756369bad07e1f804",
+      "name": "0x5966Db1fE50763C9e3C014d756369BAd07E1F804-1777648534241"
     },
     {
-      "address": "0xd1c537b2a7cba8d365e111bffb9de7b205e2cbd0",
-      "name": "weatherman12"
+      "address": "0x8cb4ca5af7d9361322340bb307a828d288c91057",
+      "name": "0x8cb4ca"
     },
     {
-      "address": "0xe734e7bf7cfb9e464681f71822f6c2f6be514f0c",
-      "name": "boyau"
+      "address": "0x81da605d7dac06478367ed1bae0593b7791ca109",
+      "name": "gardenshed"
     },
     {
-      "address": "0x8b3234f9027f4e994e949df4b48b90ab79015950",
-      "name": "Gametheory-394"
+      "address": "0xe2dd72d7ca976e65495d75b8a16ba9eda62b4a23",
+      "name": "0xe2dd72"
     },
     {
-      "address": "0x780a7539200e74e882dde303952029bda21684f0",
-      "name": "0x780A7539200E74E882ddE303952029bDA21684F0-1779685038655"
+      "address": "0x709e8dcb133555794decc598e07f2c923b8366f5",
+      "name": "0xd4aa6f8e91cfea29b66a48ebff52814"
     },
     {
-      "address": "0x3f3aa7005f8006bfcc367d43a25cde25509fe8fd",
-      "name": "us391"
+      "address": "0xa4b1eac99a65ed70e3d560126febe1086e6c5143",
+      "name": "0xa4b1ea"
     },
     {
-      "address": "0x70d94a4ff67ed919a8480885cf0808afefe7a684",
-      "name": "naiiiiii"
+      "address": "0xcd65c3279408a33866a9129bed6943064cb6ee96",
+      "name": "NiNo999"
     },
     {
-      "address": "0xdb83e85ffd22faa4009273034770f96ffc5b1e50",
-      "name": "sentrio"
+      "address": "0x0346afae2603313d2bbee96b628536c8cbe352a5",
+      "name": "GoalLineGhost"
     },
     {
-      "address": "0xdb859a551fcf56e49416160911476bea7307152f",
-      "name": "AV23IUa"
+      "address": "0x2e69bb3db7ffcedc4f83b56fe3e6f93371d1858d",
+      "name": "texasdolly"
     },
     {
-      "address": "0xc6dd722558dbfbd8fa780efcbe819ed8c6604b9f",
-      "name": "tourists"
+      "address": "0xc430e5b17128df7ce78d69fa28bc7de038641ebf",
+      "name": "Gourmet1"
     },
     {
-      "address": "0x1117eade222413335b7ec959e5b48c1d3dbc3532",
-      "name": "benwyatt"
+      "address": "0xe549581668a5751c1972d3ad2d1991d900bd2d54",
+      "name": "Allezpapa"
     },
     {
       "address": "0x987b441a20dd4aa4ba6d53069e852e7f820adf43",
       "name": "lighthousefamily"
     },
     {
-      "address": "0x076daa87c4fe1a85402a9b6b8e0a866224388d4c",
-      "name": "0x076daa"
+      "address": "0x594d0c9a3eb7f958b9fc100e3088ffc5de99059d",
+      "name": "0x594d0c"
+    },
+    {
+      "address": "0x84cfffc3f16dcc353094de30d4a45226eccd2f63",
+      "name": "mooseborzoi"
     },
     {
       "address": "0xa7b7505abe2fdcc497c00074534f7fbd7e07962e",
       "name": "gud.hl"
     },
     {
-      "address": "0x5f8691f6ee3f48a29ec8f2d909dd20900cdfa769",
-      "name": "foxy."
+      "address": "0xe734e7bf7cfb9e464681f71822f6c2f6be514f0c",
+      "name": "boyau"
+    },
+    {
+      "address": "0x5f659bccbc353dbf7bcdffdee73bee60bb482036",
+      "name": "0x5F659BcCBC353dBf7BcdffDEE73beE60bB482036-1780496231400"
+    },
+    {
+      "address": "0x4bff30af91642dc7d2b19a8664378fe55c45fc26",
+      "name": "Sassy-Bucket"
+    },
+    {
+      "address": "0x412fe1a101554f0b382181c3af932e4b2d8030fa",
+      "name": "GrizzliesSuck"
+    },
+    {
+      "address": "0xa66c59e25b7efe25bb7bdeb25227c998da4bcd67",
+      "name": "trillionaire"
+    },
+    {
+      "address": "0xc660ae71765d0d9eaf5fa8328c1c959841d2bd28",
+      "name": "BoggsFromShawshank"
+    },
+    {
+      "address": "0xfc25f141ed27bb1787338d2c4e7f51e3a15e1f7f",
+      "name": "Sisyphus."
+    },
+    {
+      "address": "0x751a2b86cab503496efd325c8344e10159349ea1",
+      "name": "Sharky6999"
     }
   ]
 }
